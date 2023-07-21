@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tabla de multiplicación</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 7px;
+      max-width: 100%;
+      background-color: #f2f2f2;
+    }
+
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 3px; /* Ajustar el relleno vertical aquí */
+    }
+
+    input[type="number"] {
+      width: 40px;
+    }
+
+    @media screen and (max-width: 600px) {
+      input[type="number"] {
+        width: 30px;
+      }
+    }
+
+    p {
+      font-size: 10px;
+      margin: 0;
+      padding: 5px;
+    }
+
+    @media screen and (max-width: 600px) {
+      p {
+        font-size: 10px;
+      }
+    }
+
+    .total-container {
+      background-color: #007bff;
+      color: #ffffff;
+      text-align: center;
+      padding: 10px;
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .total-container {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>TALLYS DE ASERRIO</h2>
+  <p>Es Largo o Corto:
+    <select id="largoCorto" onchange="calcularTotal()">
+      <option value="largo">Largo</option>
+      <option value="corto">Corto</option>
+    </select>
+  </p>
+  <p>Grosor: <input type="number" id="grosor" inputmode="numeric" pattern="[0-9]*" onchange="calcularTotal()"></p>
+  <table>
+    <thead>
+      <tr>
+        <th>PT</th>
+        <th>Piezas</th>
+        <th>Suma</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-body">
+      <!-- Aquí se generará la tabla dinámicamente -->
+    </tbody>
+  </table>
+  <div class="total-container">
+    <p>Total Piezas: <span id="sumaCasilla2"></span></p>
+    <p>Total Suma: <span id="sumaCasilla3"></span></p>
+    <p>TOTAL PIES TABLARES: <span id="totalFinal"></span></p>
+  </div>
+
+  <script>
+    function generarTabla() {
+      var tablaBody = document.getElementById("tabla-body");
+      tablaBody.innerHTML = '';
+
+      for (var i = 1; i <= 20; i++) {
+        var fila = document.createElement("tr");
+        var casilla1 = document.createElement("td");
+        var casilla2 = document.createElement("td");
+        var casilla3 = document.createElement("td");
+
+        casilla1.textContent = i;
+        casilla2.innerHTML = '<input type="number" inputmode="numeric" pattern="[0-9]*" onchange="calcularTotal()">';
+        casilla3.textContent = '';
+
+        fila.appendChild(casilla1);
+        fila.appendChild(casilla2);
+        fila.appendChild(casilla3);
+
+        tablaBody.appendChild(fila);
+      }
+    }
+
+    function calcularTabla() {
+      var tablaBody = document.getElementById("tabla-body");
+      var filas = tablaBody.getElementsByTagName("tr");
+      var grosor = parseFloat(document.getElementById("grosor").value);
+      var sumaCasilla2 = 0;
+      var sumaCasilla3 = 0;
+
+      for (var i = 0; i < filas.length; i++) {
+        var fila = filas[i];
+        var casillas = fila.getElementsByTagName("td");
+        var numeroFila1 = parseInt(casillas[0].textContent);
+        var numeroFila2 = parseFloat(casillas[1].getElementsByTagName("input")[0].value);
+
+        if (!isNaN(numeroFila2)) {
+          var resultado = numeroFila1 * numeroFila2;
+          casillas[2].textContent = resultado;
+          sumaCasilla2 += numeroFila2;
+          sumaCasilla3 += resultado;
+        } else {
+          casillas[2].textContent = '';
+        }
+      }
+
+      return [sumaCasilla2, sumaCasilla3];
+    }
+
+    function calcularTotal() {
+      var grosor = parseFloat(document.getElementById("grosor").value);
+      var largoCorto = document.getElementById("largoCorto").value;
+
+      if (!isNaN(grosor)) {
+        var sumas = calcularTabla();
+        var sumaCasilla2 = sumas[0];
+        var sumaCasilla3 = sumas[1];
+        var totalFinal;
+
+        if (largoCorto === 'largo') {
+          totalFinal = sumaCasilla3 * grosor;
+        } else {
+          totalFinal = (sumaCasilla3 * grosor) / 4;
+        }
+
+        document.getElementById("sumaCasilla2").textContent = sumaCasilla2;
+        document.getElementById("sumaCasilla3").textContent = sumaCasilla3;
+        document.getElementById("totalFinal").textContent = totalFinal.toFixed(2);
+      } else {
+        document.getElementById("sumaCasilla2").textContent = '';
+        document.getElementById("sumaCasilla3").textContent = '';
+        document.getElementById("totalFinal").textContent = '';
+      }
+    }
+
+    generarTabla();
+  </script>
+</body>
+</html>
